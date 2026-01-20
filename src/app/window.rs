@@ -3,6 +3,7 @@ use iced::{
     Length::Fill,
     widget::{button, column, container, row, text_editor, text_input},
 };
+use serde_json::Value;
 
 use crate::app::util::{decode, encode};
 
@@ -30,7 +31,7 @@ impl Window {
     }
 
     pub fn view(&self) -> Element<'_, Message> {
-        let encoded = text_input("ここに入力…", &self.encoded_value)
+        let encoded = text_input("JWT here...", &self.encoded_value)
             .on_input(Message::EncodedChanged)
             .padding(10)
             .size(20);
@@ -42,7 +43,7 @@ impl Window {
         ];
 
         let decoded = text_editor(&self.decoded_value)
-            .placeholder("Type something here...")
+            .placeholder("JSON here...")
             .on_action(Message::DecodedChanged)
             .height(Fill)
             .padding(10)
@@ -65,15 +66,27 @@ impl Window {
         match message {
             Message::EncodedChanged(s) => self.encoded_value = s,
             Message::DecodedChanged(action) => self.decoded_value.perform(action),
-            Message::Decode => match decode(self.encoded_value.clone()) {
-                Ok(x) => {
-                    self.decoded_value = text_editor::Content::with_text(
-                        x.as_str().expect("failed to get str from json value"),
-                    )
+            Message::Decode => {
+                if self.encoded_value.is_empty() {
+                    return;
                 }
-                Err(_) => self.decoded_value = text_editor::Content::new(),
-            },
+
+                match decode(self.encoded_value.as_str()) {
+                    Ok(x) => {
+                        let s = x.as_str().expect("failed to get str from json value");
+                        let v: Value =
+                            serde_json::from_str(s).expect("failed to get json from str");
+                        let p = serde_json::to_string_pretty(&v).expect("failed to prettify");
+                        self.decoded_value = text_editor::Content::with_text(p.as_str())
+                    }
+                    Err(_) => self.decoded_value = text_editor::Content::new(),
+                }
+            }
             Message::Encode => {
+                if self.decoded_value.text().is_empty() {
+                    return;
+                }
+
                 self.encoded_value = match encode(self.decoded_value.clone().text()) {
                     Ok(x) => x,
                     Err(_) => String::new(),
