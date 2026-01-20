@@ -3,8 +3,8 @@ use jsonwebtoken::{self, EncodingKey, Header, decode_header};
 use serde_json::{Value, json};
 
 /// encode (鍵なし / alg: none)
-pub fn encode<T: AsRef<str>>(s: T) -> Result<String, String> {
-    let my_payload = json!(s.as_ref());
+pub fn encode(s: &str) -> Result<String, String> {
+    let my_payload = json!(s);
 
     let header = Header::default();
 

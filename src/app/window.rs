@@ -40,7 +40,8 @@ impl Window {
             button("Decode").on_press(Message::Decode).padding(10),
             button("Encode").on_press(Message::Encode).padding(10),
             button("Clear").on_press(Message::Clear).padding(10),
-        ];
+        ]
+        .spacing(20);
 
         let decoded = text_editor(&self.decoded_value)
             .placeholder("JSON here...")
@@ -74,10 +75,7 @@ impl Window {
                 match decode(self.encoded_value.as_str()) {
                     Ok(x) => {
                         let s = x.as_str().expect("failed to get str from json value");
-                        let v: Value =
-                            serde_json::from_str(s).expect("failed to get json from str");
-                        let p = serde_json::to_string_pretty(&v).expect("failed to prettify");
-                        self.decoded_value = text_editor::Content::with_text(p.as_str())
+                        self.decoded_value = text_editor::Content::with_text(s);
                     }
                     Err(_) => self.decoded_value = text_editor::Content::new(),
                 }
@@ -87,7 +85,14 @@ impl Window {
                     return;
                 }
 
-                self.encoded_value = match encode(self.decoded_value.clone().text()) {
+                let s = self.decoded_value.text();
+                // todo: exit unexpectedly when JSON value is abc instead of "abc" - show error message
+                let v: Value = json5::from_str(&s).expect("failed to get json from str");
+                let p = serde_json::to_string_pretty(&v).expect("failed to prettify");
+                if s != p {
+                    self.decoded_value = text_editor::Content::with_text(p.as_str());
+                }
+                self.encoded_value = match encode(p.as_str()) {
                     Ok(x) => x,
                     Err(_) => String::new(),
                 };
