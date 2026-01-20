@@ -1,6 +1,6 @@
 [package]
 name = "jwt-encde"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 
 description = "GUI JWT encoder / decoder - Local, private, easy."
@@ -13,6 +13,13 @@ repository = "https://github.com/nabbisen/jwt-encde"
 readme = "README.md"
 rust-version = "1.87.0"
 
+[profile.release]     # shrink executable size
+opt-level = "z"
+lto = true
+# panic = "abort"
+strip = true
+codegen-units = 1
+
 [dependencies]
 jsonwebtoken = "9"
 serde = { version = "1", features = ["derive"] }
@@ -21,3 +28,4 @@ anyhow = "1"
 iced = "0.14"
 base64 = "0"
 json5 = "1"
+arboard = { version = "3", features = ["wayland-data-control"] }
