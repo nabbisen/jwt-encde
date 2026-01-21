@@ -5,12 +5,12 @@ use iced::{
     Alignment::{self, Center},
     Element,
     Length::{Fill, FillPortion},
-    alignment::Horizontal::Right,
     widget::{Space, button, column, container, row, stack, text, text_editor, text_input},
 };
 use jsonwebtoken::Header;
 use serde_json::Value;
 
+use crate::app::components::footer::{self, Footer};
 use crate::app::components::timestamp::{self, Timestamp};
 
 use super::util::jwt::{decode, encode};
@@ -24,6 +24,7 @@ pub struct Window {
     jwt_payload: Option<Value>,
     ui_message: Option<String>,
     timestamp: Timestamp,
+    footer: Footer,
 }
 
 #[derive(Debug, Clone)]
@@ -38,6 +39,7 @@ pub enum Message {
     Encode,
     Clear,
     TimestampMessage(timestamp::Message),
+    FooterMessage(footer::Message),
 }
 
 impl Window {
@@ -147,9 +149,11 @@ impl Window {
                 .map(move |msg| Message::TimestampMessage(msg))
         ]);
 
-        let footer = container(row![text(
-            "jwt-encde is GUI JWT encoder / decoder - Local, private, easy. Thank you for using. Dev as OSS @ https://github.com/nabbisen/jwt-encde"
-        ).color(iced::color!(0x878787))]).width(Fill).align_x(Right);
+        let footer = container(
+            self.footer
+                .view()
+                .map(move |msg| Message::FooterMessage(msg)),
+        );
 
         let content = column![encoded, buttons, decoded, timestamp_helper, footer]
             .spacing(15)
@@ -278,6 +282,9 @@ impl Window {
             Message::Clear => self.clear(),
             Message::TimestampMessage(msg) => {
                 self.timestamp.update(msg);
+            }
+            Message::FooterMessage(msg) => {
+                self.footer.update(msg);
             }
         }
     }

@@ -1,4 +1,5 @@
 use iced::{
+    Alignment::Center,
     Element,
     Length::{Fill, FillPortion},
     widget::{container, row, text, text_input},
@@ -26,7 +27,8 @@ impl Timestamp {
             text(self.timestamp.as_str()).width(FillPortion(1))
         ]
         .width(Fill)
-        .spacing(20);
+        .spacing(20)
+        .align_y(Center);
 
         container(content).width(Fill).into()
     }
