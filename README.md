@@ -9,6 +9,17 @@ GUI JWT encoder / decoder - Local, private, easy.
 
 ![screenshot](./screenshot.png)
 
+## Installation options
+
+- Download executable
+    - [Assets](https://github.com/nabbisen/jwt-encde/releases/latest) in GitHub Releases are avalilable. They are built for cross-platform.
+-  Install via Rust cargo
+    
+    ```sh
+    cargo install jwt-encde
+    jwt-encde
+    ```
+
 ## Open-source, with care
 
 This project is lovingly built and maintained by volunteers.
