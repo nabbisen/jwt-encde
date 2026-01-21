@@ -22,7 +22,7 @@ pub fn encode(header: Option<&Header>, payload: Option<&Value>) -> Result<String
         payload,
         &EncodingKey::from_secret(&[]), // ダミーのキー
     )
-    .expect("failed to encode");
+    .expect("Failed to encode");
 
     Ok(token)
 }
@@ -31,20 +31,20 @@ pub fn encode(header: Option<&Header>, payload: Option<&Value>) -> Result<String
 pub fn decode(s: &str) -> Result<(Option<Header>, Option<Value>), String> {
     let header = match decode_header(s) {
         Ok(x) => Some(x),
-        Err(err) => return Err(format!("failed to decode: {}", err.to_string())),
+        Err(err) => return Err(format!("Failed to decode: {}", err.to_string())),
     };
 
     // JWT は "Header.Payload.Signature" の形式。2 番目の要素を取得
     let parts: Vec<&str> = s.split('.').collect();
     if parts.len() < 2 {
-        return Err("failed to decode payload: invalid token format".to_owned());
+        return Err("Failed to decode payload: invalid token format".to_owned());
     }
     let payload_b64 = parts[1];
     let payload_bytes = match BASE64_URL_SAFE_NO_PAD.decode(payload_b64) {
         Ok(x) => x,
         Err(err) => {
             return Err(format!(
-                "failed to decode base64 payload: {}",
+                "Failed to decode base64 payload: {}",
                 err.to_string()
             ));
         }
@@ -53,7 +53,7 @@ pub fn decode(s: &str) -> Result<(Option<Header>, Option<Value>), String> {
         Ok(x) => Some(x),
         Err(err) => {
             return Err(format!(
-                "failed to decode serialization: {}",
+                "Failed to decode serialization: {}",
                 err.to_string()
             ));
         }

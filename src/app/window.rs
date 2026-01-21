@@ -158,7 +158,7 @@ impl Window {
                     // todo: error handling
                     let _ = clipboard.set_text(self.jwt_str.clone());
 
-                    self.ui_message = Some("Copied".to_owned());
+                    self.ui_message = Some("JWT Copied".to_owned());
                 }
             }
             Message::JwtHeaderChanged(action) => self.jwt_header_json_str.perform(action),
@@ -170,7 +170,7 @@ impl Window {
                     // todo: error handling
                     let _ = clipboard.set_text(self.jwt_header_json_str.text());
 
-                    self.ui_message = Some("Copied".to_owned());
+                    self.ui_message = Some("JSON Header Copied".to_owned());
                 }
             }
             Message::CopyJwtPayloadJsonStr => {
@@ -180,7 +180,7 @@ impl Window {
                     // todo: error handling
                     let _ = clipboard.set_text(self.jwt_payload_json_str.text());
 
-                    self.ui_message = Some("Copied".to_owned());
+                    self.ui_message = Some("JSON Payload Copied".to_owned());
                 }
             }
             Message::Decode => {
@@ -194,13 +194,13 @@ impl Window {
                         self.jwt_header = header;
                         if let Some(header) = self.jwt_header.as_ref() {
                             let s = serde_json::to_string_pretty(header)
-                                .expect("failed to get str from json value");
+                                .expect("Failed to get str from json value");
                             self.jwt_header_json_str = text_editor::Content::with_text(s.as_str());
                         }
                         self.jwt_payload = payload;
                         if let Some(payload) = self.jwt_payload.as_ref() {
                             let s = serde_json::to_string_pretty(payload)
-                                .expect("failed to get str from json value");
+                                .expect("Failed to get str from json value");
                             self.jwt_payload_json_str = text_editor::Content::with_text(s.as_str());
                         }
                     }
@@ -212,7 +212,7 @@ impl Window {
                     Ok(x) => self.jwt_header = x,
                     Err(err) => {
                         self.ui_message = Some(format!(
-                            "failed to convert header to json: {}",
+                            "Failed to convert header to json: {}",
                             err.to_string()
                         ));
                         return;
@@ -222,7 +222,7 @@ impl Window {
                     Ok(x) => self.jwt_payload = x,
                     Err(err) => {
                         self.ui_message = Some(format!(
-                            "failed to convert payload to json: {}",
+                            "Failed to convert payload to json: {}",
                             err.to_string()
                         ));
                         return;
