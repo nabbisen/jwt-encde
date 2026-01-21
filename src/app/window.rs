@@ -1,9 +1,10 @@
 use arboard::Clipboard;
 use iced::{
-    Alignment, Element,
+    Alignment::{self, Center},
+    Element,
     Length::{Fill, FillPortion},
     alignment::Horizontal::Right,
-    widget::{Text, button, column, container, row, text, text_editor, text_input},
+    widget::{Space, Text, button, column, container, row, text, text_editor, text_input},
 };
 use jsonwebtoken::Header;
 use serde_json::Value;
@@ -39,28 +40,40 @@ pub enum Message {
 
 impl Window {
     pub fn view(&self) -> Element<'_, Message> {
-        let encoded = row![column![
-            row![text("JWT"), button("Copy").on_press(Message::CopyEncoded)].spacing(20),
+        let encoded = container(column![
+            row![
+                text("JWT"),
+                button("Copy").on_press(Message::CopyEncoded),
+                Space::new().width(Fill),
+                button("Clear").on_press(Message::Clear),
+            ]
+            .spacing(20)
+            .align_y(Center),
             text_input("JWT here...", &self.jwt_str)
                 .on_input(Message::EncodedChanged)
                 .padding(10)
                 .size(20),
-        ]];
+        ]);
 
-        let buttons = row![
-            button("⬇ Decode").on_press(Message::Decode).padding(10),
-            button("⬆ Encode").on_press(Message::Encode).padding(10),
-            button("Clear").on_press(Message::Clear).padding(10),
-        ]
-        .spacing(20);
+        let buttons = container(
+            row![
+                button("⬇ Decode").on_press(Message::Decode).padding(5),
+                button("⬆ Encode").on_press(Message::Encode).padding(5),
+            ]
+            .spacing(20)
+            .align_y(Center),
+        )
+        .center_x(Fill)
+        .padding(10);
 
-        let decoded = row![
+        let decoded = container(row![
             column![
                 row![
                     text("Header"),
                     button("Copy").on_press(Message::CopyJwtHeaderJsonStr)
                 ]
-                .spacing(20),
+                .spacing(20)
+                .align_y(Center),
                 text_editor(&self.jwt_header_json_str)
                     .placeholder("JSON str of JWT header here...")
                     .on_action(Message::JwtHeaderChanged)
@@ -75,7 +88,8 @@ impl Window {
                     text("Payload"),
                     button("Copy").on_press(Message::CopyJwtPayloadJsonStr)
                 ]
-                .spacing(20),
+                .spacing(20)
+                .align_y(Center),
                 text_editor(&self.jwt_payload_json_str)
                     .placeholder("JSON str of JWT payload here...")
                     .on_action(Message::JwtPayloadChanged)
@@ -85,17 +99,17 @@ impl Window {
             ]
             .width(FillPortion(6))
             .height(Fill),
-        ];
+        ]);
 
-        let timestamp_helper = row![
+        let timestamp_helper = container(row![
             self.timestamp
                 .view()
                 .map(move |msg| Message::TimestampMessage(msg))
-        ];
+        ]);
 
-        let footer = row![text(
+        let footer = container(row![text(
             "jwt-encde is GUI JWT encoder / decoder - Local, private, easy. Thank you for using. Dev as OSS @ https://github.com/nabbisen/jwt-encde"
-        ).width(Fill).align_x(Right).color(iced::color!(0x878787))];
+        ).color(iced::color!(0x878787))]).width(Fill).align_x(Right);
 
         let mut content = column![];
         if let Some(ui_message) = self.ui_message.clone() {
