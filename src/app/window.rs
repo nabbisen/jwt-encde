@@ -8,7 +8,9 @@ use iced::{
 use jsonwebtoken::Header;
 use serde_json::Value;
 
-use crate::app::jwt::{decode, encode};
+use crate::app::components::timestamp::{self, Timestamp};
+
+use super::util::jwt::{decode, encode};
 
 #[derive(Default)]
 pub struct Window {
@@ -18,6 +20,7 @@ pub struct Window {
     jwt_payload_json_str: text_editor::Content,
     jwt_payload: Option<Value>,
     ui_message: Option<String>,
+    timestamp: Timestamp,
 }
 
 #[derive(Debug, Clone)]
@@ -31,6 +34,7 @@ pub enum Message {
     Decode,
     Encode,
     Clear,
+    TimestampMessage(timestamp::Message),
 }
 
 impl Window {
@@ -44,8 +48,8 @@ impl Window {
         ]];
 
         let buttons = row![
-            button("Decode").on_press(Message::Decode).padding(10),
-            button("Encode").on_press(Message::Encode).padding(10),
+            button("⬇ Decode").on_press(Message::Decode).padding(10),
+            button("⬆ Encode").on_press(Message::Encode).padding(10),
             button("Clear").on_press(Message::Clear).padding(10),
         ]
         .spacing(20);
@@ -83,6 +87,12 @@ impl Window {
             .height(Fill),
         ];
 
+        let timestamp_helper = row![
+            self.timestamp
+                .view()
+                .map(move |msg| Message::TimestampMessage(msg))
+        ];
+
         let footer = row![text(
             "jwt-encde is GUI JWT encoder / decoder - Local, private, easy. Thank you for using. Dev as OSS @ https://github.com/nabbisen/jwt-encde"
         ).width(Fill).align_x(Right).color(iced::color!(0x878787))];
@@ -91,7 +101,7 @@ impl Window {
         if let Some(ui_message) = self.ui_message.clone() {
             content = content.push(Text::new(ui_message));
         }
-        for child in [encoded, buttons, decoded, footer] {
+        for child in [encoded, buttons, decoded, timestamp_helper, footer] {
             content = content.push(child);
         }
         content = content.spacing(15).padding(20).align_x(Alignment::Start);
@@ -190,6 +200,9 @@ impl Window {
                 };
             }
             Message::Clear => self.clear(),
+            Message::TimestampMessage(msg) => {
+                self.timestamp.update(msg);
+            }
         }
     }
 
