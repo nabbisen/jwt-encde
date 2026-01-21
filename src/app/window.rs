@@ -44,9 +44,13 @@ impl Window {
         let encoded = container(column![
             row![
                 text("JWT"),
-                button("Copy")
-                    .style(button::secondary)
-                    .on_press(Message::CopyEncoded),
+                button("Copy").style(button::secondary).on_press_maybe(
+                    if !self.jwt_str.is_empty() {
+                        Some(Message::CopyEncoded)
+                    } else {
+                        None
+                    }
+                ),
                 Space::new().width(Fill),
                 button("Clear")
                     .style(button::secondary)
@@ -63,8 +67,21 @@ impl Window {
 
         let buttons = container(
             row![
-                button("⬇ Decode").on_press(Message::Decode).padding(5),
-                button("⬆ Encode").on_press(Message::Encode).padding(5),
+                button("⬇ Decode")
+                    .padding(5)
+                    .on_press_maybe(if !self.jwt_str.is_empty() {
+                        Some(Message::Decode)
+                    } else {
+                        None
+                    }),
+                button("⬆ Encode").padding(5).on_press_maybe(
+                    if !self.jwt_header_json_str.is_empty() || !self.jwt_payload_json_str.is_empty()
+                    {
+                        Some(Message::Encode)
+                    } else {
+                        None
+                    }
+                ),
             ]
             .spacing(40)
             .align_y(Center),
@@ -76,9 +93,13 @@ impl Window {
             column![
                 row![
                     text("Header"),
-                    button("Copy")
-                        .style(button::secondary)
-                        .on_press(Message::CopyJwtHeaderJsonStr)
+                    button("Copy").style(button::secondary).on_press_maybe(
+                        if !self.jwt_header_json_str.is_empty() {
+                            Some(Message::CopyJwtHeaderJsonStr)
+                        } else {
+                            None
+                        }
+                    )
                 ]
                 .padding(5)
                 .spacing(20)
@@ -96,9 +117,13 @@ impl Window {
             column![
                 row![
                     text("Payload"),
-                    button("Copy")
-                        .style(button::secondary)
-                        .on_press(Message::CopyJwtPayloadJsonStr)
+                    button("Copy").style(button::secondary).on_press_maybe(
+                        if !self.jwt_payload_json_str.is_empty() {
+                            Some(Message::CopyJwtPayloadJsonStr)
+                        } else {
+                            None
+                        }
+                    )
                 ]
                 .padding(5)
                 .spacing(20)
@@ -152,86 +177,79 @@ impl Window {
         match message {
             Message::EncodedChanged(s) => self.jwt_str = s,
             Message::CopyEncoded => {
-                if !self.jwt_str.is_empty()
-                    && let Ok(mut clipboard) = Clipboard::new()
-                {
-                    // todo: error handling
-                    let _ = clipboard.set_text(self.jwt_str.clone());
-
-                    self.ui_message = Some("JWT Copied".to_owned());
-                }
+                self.ui_message = Some(match Clipboard::new() {
+                    Ok(mut clipboard) => match clipboard.set_text(self.jwt_str.clone()) {
+                        Ok(_) => "JWT Copied".to_owned(),
+                        Err(err) => format!("Failed to copy to clipboard: {}", err.to_string()),
+                    },
+                    Err(err) => format!("Failed to load clipboard: {}", err.to_string()),
+                });
             }
             Message::JwtHeaderChanged(action) => self.jwt_header_json_str.perform(action),
             Message::JwtPayloadChanged(action) => self.jwt_payload_json_str.perform(action),
             Message::CopyJwtHeaderJsonStr => {
-                if !self.jwt_header_json_str.is_empty()
-                    && let Ok(mut clipboard) = Clipboard::new()
-                {
-                    // todo: error handling
-                    let _ = clipboard.set_text(self.jwt_header_json_str.text());
-
-                    self.ui_message = Some("JSON Header Copied".to_owned());
-                }
+                self.ui_message = Some(match Clipboard::new() {
+                    Ok(mut clipboard) => {
+                        match clipboard.set_text(self.jwt_header_json_str.text()) {
+                            Ok(_) => "JSON Header Copied".to_owned(),
+                            Err(err) => format!("Failed to copy to clipboard: {}", err.to_string()),
+                        }
+                    }
+                    Err(err) => format!("Failed to load clipboard: {}", err.to_string()),
+                });
             }
             Message::CopyJwtPayloadJsonStr => {
-                if !self.jwt_payload_json_str.is_empty()
-                    && let Ok(mut clipboard) = Clipboard::new()
-                {
-                    // todo: error handling
-                    let _ = clipboard.set_text(self.jwt_payload_json_str.text());
-
-                    self.ui_message = Some("JSON Payload Copied".to_owned());
-                }
+                self.ui_message = Some(match Clipboard::new() {
+                    Ok(mut clipboard) => match clipboard.set_text(self.jwt_payload_json_str.text())
+                    {
+                        Ok(_) => "JSON Payload Copied".to_owned(),
+                        Err(err) => format!("Failed to copy to clipboard: {}", err.to_string()),
+                    },
+                    Err(err) => format!("Failed to load clipboard: {}", err.to_string()),
+                });
             }
-            Message::Decode => {
-                if self.jwt_str.is_empty() {
-                    self.ui_message = Some("No input.".to_owned());
-                    return;
-                }
-
-                match decode(self.jwt_str.as_str()) {
-                    Ok((header, payload)) => {
-                        self.jwt_header = header;
-                        if let Some(header) = self.jwt_header.as_ref() {
-                            let s = serde_json::to_string_pretty(header)
-                                .expect("Failed to get str from json value");
-                            self.jwt_header_json_str = text_editor::Content::with_text(s.as_str());
-                        }
-                        self.jwt_payload = payload;
-                        if let Some(payload) = self.jwt_payload.as_ref() {
-                            let s = serde_json::to_string_pretty(payload)
-                                .expect("Failed to get str from json value");
-                            self.jwt_payload_json_str = text_editor::Content::with_text(s.as_str());
-                        }
+            Message::Decode => match decode(self.jwt_str.as_str()) {
+                Ok((header, payload)) => {
+                    self.jwt_header = header;
+                    if let Some(header) = self.jwt_header.as_ref() {
+                        let s = serde_json::to_string_pretty(header)
+                            .expect("Failed to get str from json value");
+                        self.jwt_header_json_str = text_editor::Content::with_text(s.as_str());
                     }
-                    Err(_) => self.clear_decoded(),
+                    self.jwt_payload = payload;
+                    if let Some(payload) = self.jwt_payload.as_ref() {
+                        let s = serde_json::to_string_pretty(payload)
+                            .expect("Failed to get str from json value");
+                        self.jwt_payload_json_str = text_editor::Content::with_text(s.as_str());
+                    }
                 }
-            }
+                Err(_) => self.clear_decoded(),
+            },
             Message::Encode => {
-                match json5::from_str(self.jwt_header_json_str.text().as_str()) {
-                    Ok(x) => self.jwt_header = x,
-                    Err(err) => {
-                        self.ui_message = Some(format!(
-                            "Failed to convert header to json: {}",
-                            err.to_string()
-                        ));
-                        return;
+                if !self.jwt_header_json_str.text().is_empty() {
+                    match json5::from_str(self.jwt_header_json_str.text().as_str()) {
+                        Ok(x) => self.jwt_header = x,
+                        Err(err) => {
+                            self.ui_message = Some(format!(
+                                "Failed to convert header to json: {}",
+                                err.to_string()
+                            ));
+                            return;
+                        }
                     }
-                };
-                match json5::from_str(self.jwt_payload_json_str.text().as_str()) {
-                    Ok(x) => self.jwt_payload = x,
-                    Err(err) => {
-                        self.ui_message = Some(format!(
-                            "Failed to convert payload to json: {}",
-                            err.to_string()
-                        ));
-                        return;
-                    }
-                };
+                }
 
-                if self.jwt_header.is_none() && self.jwt_payload.is_none() {
-                    self.ui_message = Some("No input.".to_owned());
-                    return;
+                if !self.jwt_payload_json_str.text().is_empty() {
+                    match json5::from_str(self.jwt_payload_json_str.text().as_str()) {
+                        Ok(x) => self.jwt_payload = x,
+                        Err(err) => {
+                            self.ui_message = Some(format!(
+                                "Failed to convert payload to json: {}",
+                                err.to_string()
+                            ));
+                            return;
+                        }
+                    }
                 }
 
                 match encode(self.jwt_header.as_ref(), self.jwt_payload.as_ref()) {
