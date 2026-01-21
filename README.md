@@ -30,7 +30,7 @@ This app allows you to **inspect, analyze, and edit JWT payloads as JSON**, and 
 
 #### Note: This app does **not** support JWT signing or token introspection
 
-In real-world systems, signing keys and token validation are usually managed by the IDaaS. They should be verified through actual integration with the provider.
+In real-world systems, signing keys and token validation are typically managed by IDaaS. They should be verified through actual integration with the provider.
 
 ## Usage options
 
