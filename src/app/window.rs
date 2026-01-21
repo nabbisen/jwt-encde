@@ -235,6 +235,7 @@ impl Window {
         self.clear_encoded();
         self.clear_decoded();
         self.ui_message = None;
+        self.timestamp.update(timestamp::Message::Clear);
     }
 
     fn clear_encoded(&mut self) {

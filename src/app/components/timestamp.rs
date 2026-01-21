@@ -13,6 +13,7 @@ pub struct Timestamp {
 #[derive(Debug, Clone)]
 pub enum Message {
     Input(String),
+    Clear,
 }
 
 impl Timestamp {
@@ -49,7 +50,13 @@ impl Timestamp {
                     String::default()
                 };
             }
+            Message::Clear => self.clear(),
         }
+    }
+
+    fn clear(&mut self) {
+        self.unix = String::default();
+        self.timestamp = String::default();
     }
 }
 
