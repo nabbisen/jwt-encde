@@ -70,14 +70,14 @@ impl Window {
 
         let buttons = container(
             row![
-                button("⬇ Decode")
+                button("↓ Decode")
                     .padding(5)
                     .on_press_maybe(if !self.jwt_str.is_empty() {
                         Some(Message::Decode)
                     } else {
                         None
                     }),
-                button("⬆ Encode").padding(5).on_press_maybe(
+                button("Encode ↑").padding(5).on_press_maybe(
                     if !self.jwt_header_json_str.is_empty() || !self.jwt_payload_json_str.is_empty()
                     {
                         Some(Message::Encode)
