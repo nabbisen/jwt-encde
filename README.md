@@ -15,22 +15,26 @@ A lightweight, open-source GUI tool for JWT encoding and decoding, designed to s
 
 This app allows you to **inspect, analyze, and edit JWT payloads as JSON**, and easily convert test JSON data into JWTs for development and debugging purposes.    
 
-Key features:
+### Key features
 
 - Runs entirely **offline**, unlike online tools
     - It strongly ensures **security and privacy**. No data ever leaves your machine.
 - Built with a **low-memory, high-performance architecture** 
 - Available as a **cross-platform binary** for Windows, macOS, and Linux
 
-Additional features include:
+#### Additional features included
 
 - Syntax highlighting for JSON to improve readability
 - Disabled states for unavailable actions to prevent accidental operations
 - A built-in helper tool for analyzing UNIX timestamps within JSON data
 
-## Installation options
+#### Note: This app does **not** support JWT signing or token introspection
 
-- Download executable
+In real-world systems, signing keys and token validation are usually managed by the IDaaS. They should be verified through actual integration with the provider.
+
+## Usage options
+
+- Download executable and just run it
     - [Assets](https://github.com/nabbisen/jwt-encde/releases/latest) in GitHub Releases are avalilable
 -  Install via Rust cargo
     
