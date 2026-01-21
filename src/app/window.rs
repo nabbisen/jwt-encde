@@ -51,6 +51,7 @@ impl Window {
                     .style(button::secondary)
                     .on_press(Message::Clear),
             ]
+            .padding(5)
             .spacing(20)
             .align_y(Center),
             text_input("JWT here...", &self.jwt_str)
@@ -64,11 +65,11 @@ impl Window {
                 button("⬇ Decode").on_press(Message::Decode).padding(5),
                 button("⬆ Encode").on_press(Message::Encode).padding(5),
             ]
-            .spacing(20)
+            .spacing(40)
             .align_y(Center),
         )
         .center_x(Fill)
-        .padding(10);
+        .padding(8);
 
         let decoded = container(row![
             column![
@@ -78,13 +79,14 @@ impl Window {
                         .style(button::secondary)
                         .on_press(Message::CopyJwtHeaderJsonStr)
                 ]
+                .padding(5)
                 .spacing(20)
                 .align_y(Center),
                 text_editor(&self.jwt_header_json_str)
                     .placeholder("JSON str of JWT header here...")
                     .on_action(Message::JwtHeaderChanged)
                     .height(Fill)
-                    .padding(10)
+                    .padding(5)
                     .size(20),
             ]
             .width(FillPortion(4))
@@ -96,6 +98,7 @@ impl Window {
                         .style(button::secondary)
                         .on_press(Message::CopyJwtPayloadJsonStr)
                 ]
+                .padding(5)
                 .spacing(20)
                 .align_y(Center),
                 text_editor(&self.jwt_payload_json_str)
