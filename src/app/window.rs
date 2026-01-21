@@ -4,7 +4,7 @@ use iced::{
     Element,
     Length::{Fill, FillPortion},
     alignment::Horizontal::Right,
-    widget::{Space, Text, button, column, container, row, text, text_editor, text_input},
+    widget::{Space, button, column, container, row, stack, text, text_editor, text_input},
 };
 use jsonwebtoken::Header;
 use serde_json::Value;
@@ -122,21 +122,27 @@ impl Window {
             "jwt-encde is GUI JWT encoder / decoder - Local, private, easy. Thank you for using. Dev as OSS @ https://github.com/nabbisen/jwt-encde"
         ).color(iced::color!(0x878787))]).width(Fill).align_x(Right);
 
-        let mut content = column![];
-        if let Some(ui_message) = self.ui_message.clone() {
-            content = content.push(Text::new(ui_message));
-        }
-        for child in [encoded, buttons, decoded, timestamp_helper, footer] {
-            content = content.push(child);
-        }
-        content = content.spacing(15).padding(20).align_x(Alignment::Start);
+        let content = column![encoded, buttons, decoded, timestamp_helper, footer]
+            .spacing(15)
+            .padding(20)
+            .align_x(Alignment::Start);
 
-        container(content)
-            .width(Fill)
-            .height(Fill)
-            .center_x(Fill)
-            .center_y(Fill)
-            .into()
+        let mut stack = stack![
+            container(content)
+                .width(Fill)
+                .height(Fill)
+                .center_x(Fill)
+                .center_y(Fill)
+        ];
+        if let Some(ui_message) = self.ui_message.clone() {
+            let ui_message = container(text(ui_message))
+                .padding(5)
+                .width(Fill)
+                .align_x(Center);
+            stack = stack.push(ui_message);
+        }
+
+        stack.into()
     }
 
     pub fn update(&mut self, message: Message) {
