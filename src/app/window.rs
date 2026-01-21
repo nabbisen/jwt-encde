@@ -43,9 +43,13 @@ impl Window {
         let encoded = container(column![
             row![
                 text("JWT"),
-                button("Copy").on_press(Message::CopyEncoded),
+                button("Copy")
+                    .style(button::secondary)
+                    .on_press(Message::CopyEncoded),
                 Space::new().width(Fill),
-                button("Clear").on_press(Message::Clear),
+                button("Clear")
+                    .style(button::secondary)
+                    .on_press(Message::Clear),
             ]
             .spacing(20)
             .align_y(Center),
@@ -70,7 +74,9 @@ impl Window {
             column![
                 row![
                     text("Header"),
-                    button("Copy").on_press(Message::CopyJwtHeaderJsonStr)
+                    button("Copy")
+                        .style(button::secondary)
+                        .on_press(Message::CopyJwtHeaderJsonStr)
                 ]
                 .spacing(20)
                 .align_y(Center),
@@ -86,7 +92,9 @@ impl Window {
             column![
                 row![
                     text("Payload"),
-                    button("Copy").on_press(Message::CopyJwtPayloadJsonStr)
+                    button("Copy")
+                        .style(button::secondary)
+                        .on_press(Message::CopyJwtPayloadJsonStr)
                 ]
                 .spacing(20)
                 .align_y(Center),
