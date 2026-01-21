@@ -19,7 +19,7 @@ pub enum Message {
 impl Timestamp {
     pub fn view(&self) -> Element<'_, Message> {
         let content = row![
-            text("Help tool: Timestamp checker"),
+            text("Helper: Timestamp converter to datetime"),
             text_input("Unix timestamp here...", &self.unix)
                 .on_input(Message::Input)
                 .width(FillPortion(1)),

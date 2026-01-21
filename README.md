@@ -9,10 +9,29 @@ GUI JWT encoder / decoder - Local, private, easy.
 
 ![screenshot](./screenshot.png)
 
+## Description
+
+A lightweight, open-source GUI tool for JWT encoding and decoding, designed to support testing around authentication and authorization in app development.
+
+This app allows you to **inspect, analyze, and edit JWT payloads as JSON**, and easily convert test JSON data into JWTs for development and debugging purposes.    
+
+Key features:
+
+- Runs entirely **offline**, unlike online tools
+    - It strongly ensures **security and privacy**. No data ever leaves your machine.
+- Built with a **low-memory, high-performance architecture** 
+- Available as a **cross-platform binary** for Windows, macOS, and Linux
+
+Additional features include:
+
+- Syntax highlighting for JSON to improve readability
+- Disabled states for unavailable actions to prevent accidental operations
+- A built-in helper tool for analyzing UNIX timestamps within JSON data
+
 ## Installation options
 
 - Download executable
-    - [Assets](https://github.com/nabbisen/jwt-encde/releases/latest) in GitHub Releases are avalilable. They are built for cross-platform.
+    - [Assets](https://github.com/nabbisen/jwt-encde/releases/latest) in GitHub Releases are avalilable
 -  Install via Rust cargo
     
     ```sh
