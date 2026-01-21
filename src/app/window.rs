@@ -1,4 +1,5 @@
 use arboard::Clipboard;
+use iced::highlighter;
 use iced::{
     Alignment::{self, Center},
     Element,
@@ -85,6 +86,7 @@ impl Window {
                 text_editor(&self.jwt_header_json_str)
                     .placeholder("JSON str of JWT header here...")
                     .on_action(Message::JwtHeaderChanged)
+                    .highlight("json", highlighter::Theme::Base16Ocean)
                     .height(Fill)
                     .padding(5)
                     .size(20),
@@ -104,6 +106,7 @@ impl Window {
                 text_editor(&self.jwt_payload_json_str)
                     .placeholder("JSON str of JWT payload here...")
                     .on_action(Message::JwtPayloadChanged)
+                    .highlight("json", highlighter::Theme::Base16Ocean)
                     .height(Fill)
                     .padding(10)
                     .size(20),

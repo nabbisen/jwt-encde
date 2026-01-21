@@ -29,7 +29,7 @@ incremental = false
 arboard = { version = "3", features = ["wayland-data-control"] }
 base64 = "0.22"
 chrono = { version = "0", default-features = false, features = ["clock"] }
-iced = "0.14"
+iced = { version = "0.14", features = ["highlighter"] }
 json5 = "1"
 jsonwebtoken = { version = "10", features = ["default", "rust_crypto"] }
 serde = { version = "1", features = ["derive"] }
