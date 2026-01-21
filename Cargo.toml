@@ -23,7 +23,7 @@ codegen-units = 1
 [profile.dev]         # to improve productivity
 opt-level = 1         # slightly optimize
 lto = false           # disable link-time optimizations
-incremental = true
+incremental = false
 
 [dependencies]
 arboard = { version = "3", features = ["wayland-data-control"] }
