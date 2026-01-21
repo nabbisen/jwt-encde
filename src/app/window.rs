@@ -184,8 +184,8 @@ impl Window {
                 }
             }
             Message::Decode => {
-                // todo: button disabled
                 if self.jwt_str.is_empty() {
+                    self.ui_message = Some("No input.".to_owned());
                     return;
                 }
 
@@ -228,6 +228,12 @@ impl Window {
                         return;
                     }
                 };
+
+                if self.jwt_header.is_none() && self.jwt_payload.is_none() {
+                    self.ui_message = Some("No input.".to_owned());
+                    return;
+                }
+
                 match encode(self.jwt_header.as_ref(), self.jwt_payload.as_ref()) {
                     Ok(x) => self.jwt_str = x,
                     Err(_) => self.clear_encoded(),
