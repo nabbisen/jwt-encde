@@ -6,12 +6,13 @@ use iced::{
 };
 use serde_json::Value;
 
-use crate::app::util::{decode, encode};
+use crate::app::jwt::{decode, encode};
 
 #[derive(Default)]
 pub struct Window {
-    encoded_value: String,
-    decoded_value: text_editor::Content,
+    encoded_str: String,
+    decoded_str: text_editor::Content,
+    payload: Value,
     ui_message: Option<String>,
 }
 
@@ -27,17 +28,9 @@ pub enum Message {
 }
 
 impl Window {
-    pub fn new() -> Self {
-        Self {
-            encoded_value: String::new(),
-            decoded_value: text_editor::Content::new(),
-            ui_message: None,
-        }
-    }
-
     pub fn view(&self) -> Element<'_, Message> {
         let encoded = row![
-            text_input("JWT here...", &self.encoded_value)
+            text_input("JWT here...", &self.encoded_str)
                 .on_input(Message::EncodedChanged)
                 .padding(10)
                 .size(20),
@@ -52,7 +45,7 @@ impl Window {
         .spacing(20);
 
         let decoded = row![
-            text_editor(&self.decoded_value)
+            text_editor(&self.decoded_str)
                 .placeholder("JSON here...")
                 .on_action(Message::DecodedChanged)
                 .height(Fill)
@@ -80,47 +73,51 @@ impl Window {
 
     pub fn update(&mut self, message: Message) {
         match message {
-            Message::EncodedChanged(s) => self.encoded_value = s,
+            Message::EncodedChanged(s) => self.encoded_str = s,
             Message::CopyEncoded => {
-                if !self.encoded_value.is_empty()
+                if !self.encoded_str.is_empty()
                     && let Ok(mut clipboard) = Clipboard::new()
                 {
                     // todo: error handling
-                    let _ = clipboard.set_text(self.encoded_value.clone());
+                    let _ = clipboard.set_text(self.encoded_str.clone());
 
                     self.ui_message = Some("Copied".to_owned());
                 }
             }
-            Message::DecodedChanged(action) => self.decoded_value.perform(action),
+            Message::DecodedChanged(action) => self.decoded_str.perform(action),
             Message::CopyDecoded => {
-                if !self.decoded_value.is_empty()
+                if !self.decoded_str.is_empty()
                     && let Ok(mut clipboard) = Clipboard::new()
                 {
                     // todo: error handling
-                    let _ = clipboard.set_text(self.decoded_value.text());
+                    let _ = clipboard.set_text(self.decoded_str.text());
 
                     self.ui_message = Some("Copied".to_owned());
                 }
             }
             Message::Decode => {
-                if self.encoded_value.is_empty() {
+                // todo: button disabled
+                if self.encoded_str.is_empty() {
                     return;
                 }
 
-                match decode(self.encoded_value.as_str()) {
+                match decode(self.encoded_str.as_str()) {
                     Ok(x) => {
-                        let s = x.as_str().expect("failed to get str from json value");
-                        self.decoded_value = text_editor::Content::with_text(s);
+                        self.payload = x;
+                        let s = serde_json::to_string_pretty(&self.payload)
+                            .expect("failed to get str from json value");
+                        self.decoded_str = text_editor::Content::with_text(s.as_str());
                     }
-                    Err(_) => self.decoded_value = text_editor::Content::new(),
+                    Err(_) => self.decoded_str = text_editor::Content::new(),
                 }
             }
             Message::Encode => {
-                if self.decoded_value.text().is_empty() {
+                // todo: button disabled
+                if self.decoded_str.text().is_empty() {
                     return;
                 }
 
-                let s = self.decoded_value.text();
+                let s = self.decoded_str.text();
                 let v: Value = match json5::from_str(&s) {
                     Ok(x) => x,
                     Err(err) => {
@@ -129,18 +126,16 @@ impl Window {
                         return;
                     }
                 };
-                let p = serde_json::to_string_pretty(&v).expect("failed to prettify");
-                if s != p {
-                    self.decoded_value = text_editor::Content::with_text(p.as_str());
-                }
-                self.encoded_value = match encode(p.as_str()) {
+                self.payload = v;
+                self.encoded_str = match encode(&self.payload) {
                     Ok(x) => x,
-                    Err(_) => String::new(),
+                    Err(_) => String::default(),
                 };
             }
             Message::Clear => {
-                self.encoded_value = String::new();
-                self.decoded_value = text_editor::Content::new();
+                self.encoded_str = String::default();
+                self.payload = Value::default();
+                self.decoded_str = text_editor::Content::default();
                 self.ui_message = None;
             }
         }

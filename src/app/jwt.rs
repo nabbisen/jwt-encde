@@ -1,16 +1,15 @@
 use base64::{Engine, prelude::BASE64_URL_SAFE_NO_PAD};
-use jsonwebtoken::{self, EncodingKey, Header, decode_header};
-use serde_json::{Value, json};
+use jsonwebtoken::{self, EncodingKey, Header};
+use serde_json::Value;
 
 /// encode (鍵なし / alg: none)
-pub fn encode(s: &str) -> Result<String, String> {
-    let my_payload = json!(s);
-
+pub fn encode(payload: &Value) -> Result<String, String> {
+    // todo: header
     let header = Header::default();
 
     let token = jsonwebtoken::encode(
         &header,
-        &my_payload,
+        payload,
         &EncodingKey::from_secret(&[]), // ダミーのキー
     )
     .expect("failed to encode");
