@@ -1,6 +1,6 @@
 [package]
 name = "jwt-encde"
-version = "0.5.2"
+version = "0.5.3"
 edition = "2024"
 
 description = "GUI JWT encoder / decoder - Local, private, easy."
@@ -8,7 +8,7 @@ authors = ["nabbisen <nabbisen@scqr.net>"]
 license = "Apache-2.0"
 
 categories = ["development-tools"]
-keywords = ["jwt", "auth", "test", "encrytion", "security"]
+keywords = ["jwt", "auth", "test", "encryption", "security"]
 repository = "https://github.com/nabbisen/jwt-encde"
 readme = "README.md"
 rust-version = "1.87.0"
