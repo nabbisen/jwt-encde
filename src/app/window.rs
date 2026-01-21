@@ -1,5 +1,6 @@
 use arboard::Clipboard;
 use iced::highlighter;
+use iced::widget::text_editor::{Action, Edit};
 use iced::{
     Alignment::{self, Center},
     Element,
@@ -211,17 +212,30 @@ impl Window {
             Message::Decode => match decode(self.jwt_str.as_str()) {
                 Ok((header, payload)) => {
                     self.jwt_header = header;
-                    if let Some(header) = self.jwt_header.as_ref() {
-                        let s = serde_json::to_string_pretty(header)
-                            .expect("Failed to get str from json value");
-                        self.jwt_header_json_str = text_editor::Content::with_text(s.as_str());
-                    }
+                    let jwt_header_json_str = if let Some(header) = self.jwt_header.as_ref() {
+                        serde_json::to_string_pretty(header)
+                            .expect("Failed to get str from jwt header json")
+                    } else {
+                        String::default()
+                    };
+                    self.jwt_header_json_str.perform(Action::SelectAll);
+                    self.jwt_header_json_str
+                        .perform(Action::Edit(Edit::Paste(jwt_header_json_str.into())));
+
                     self.jwt_payload = payload;
-                    if let Some(payload) = self.jwt_payload.as_ref() {
-                        let s = serde_json::to_string_pretty(payload)
-                            .expect("Failed to get str from json value");
-                        self.jwt_payload_json_str = text_editor::Content::with_text(s.as_str());
-                    }
+                    let jwt_payload_json_str = if let Some(payload) = self.jwt_payload.as_ref() {
+                        if !payload.is_null() {
+                            serde_json::to_string_pretty(payload)
+                                .expect("Failed to get str from jwt payload json")
+                        } else {
+                            String::default()
+                        }
+                    } else {
+                        String::default()
+                    };
+                    self.jwt_payload_json_str.perform(Action::SelectAll);
+                    self.jwt_payload_json_str
+                        .perform(Action::Edit(Edit::Paste(jwt_payload_json_str.into())));
                 }
                 Err(_) => self.clear_decoded(),
             },
@@ -237,6 +251,8 @@ impl Window {
                             return;
                         }
                     }
+                } else {
+                    self.jwt_header = None;
                 }
 
                 if !self.jwt_payload_json_str.text().is_empty() {
@@ -250,6 +266,8 @@ impl Window {
                             return;
                         }
                     }
+                } else {
+                    self.jwt_payload = None;
                 }
 
                 match encode(self.jwt_header.as_ref(), self.jwt_payload.as_ref()) {
