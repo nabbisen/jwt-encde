@@ -51,4 +51,4 @@ Please understand that the project has its own direction — while we welcome fe
 
 ## Acknowledgements
 
-Depends on the crates of [arboard](https://crates.io/crates/arboard), [base64](https://crates.io/crates/base64), [iced](https://crates.io/crates/iced), [json5](https://crates.io/crates/json5), [jsonwebtoken](https://crates.io/crates/jsonwebtoken), [serde](https://crates.io/crates/serde), [serde_json](https://crates.io/crates/serde_json), [webbrowser](https://crates.io/crates/webbrowser).
+Depends on the crates of [arboard](https://crates.io/crates/arboard), [base64](https://crates.io/crates/base64), [hmac](https://crates.io/crates/hmac), [iced](https://crates.io/crates/iced), [json5](https://crates.io/crates/json5), [serde](https://crates.io/crates/serde), [serde_json](https://crates.io/crates/serde_json), [sha2](https://crates.io/crates/sha2), [webbrowser](https://crates.io/crates/webbrowser).

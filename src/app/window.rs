@@ -7,7 +7,6 @@ use iced::{
     Length::{Fill, FillPortion},
     widget::{Space, button, column, container, row, stack, text, text_editor, text_input},
 };
-use jsonwebtoken::Header;
 use serde_json::Value;
 
 use crate::app::components::footer::{self, Footer};
@@ -19,7 +18,7 @@ use super::util::jwt::{decode, encode};
 pub struct Window {
     jwt_str: String,
     jwt_header_json_str: text_editor::Content,
-    jwt_header: Option<Header>,
+    jwt_header: Option<Value>,
     jwt_payload_json_str: text_editor::Content,
     jwt_payload: Option<Value>,
     ui_message: Option<String>,

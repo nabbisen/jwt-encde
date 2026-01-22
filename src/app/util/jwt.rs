@@ -1,58 +1,83 @@
 use base64::{Engine, prelude::BASE64_URL_SAFE_NO_PAD};
-use jsonwebtoken::{self, Algorithm, EncodingKey, Header, decode_header};
+use hmac::{Hmac, Mac};
 use serde_json::Value;
+use sha2::Sha256;
 
-/// encode (鍵なし / alg: none)
-pub fn encode(header: Option<&Header>, payload: Option<&Value>) -> Result<String, String> {
-    // todo: header
+type HmacSha256 = Hmac<Sha256>;
+
+/// encode with dummy signature
+pub fn encode(header: Option<&Value>, payload: Option<&Value>) -> Result<String, String> {
+    // header
     let header = if let Some(header) = header {
         header
     } else {
-        &Header::default()
+        &Value::Null
     };
 
+    let header_json = serde_json::to_string(header).expect("Failed to get header hmac");
+    let header_b64 = BASE64_URL_SAFE_NO_PAD.encode(header_json.as_bytes());
+
+    // payload
     let payload = if let Some(payload) = payload {
         payload
     } else {
         &Value::Null
     };
 
-    let private_key_pem = &[]; // dummy
-    let key = match header.alg {
-        Algorithm::HS256 | Algorithm::HS384 | Algorithm::HS512 => {
-            EncodingKey::from_secret(private_key_pem)
-        }
-        Algorithm::RS256
-        | Algorithm::RS384
-        | Algorithm::RS512
-        | Algorithm::PS256
-        | Algorithm::PS384
-        | Algorithm::PS512 => {
-            EncodingKey::from_rsa_pem(private_key_pem).map_err(|e| e.to_string())?
-        }
-        Algorithm::ES256 | Algorithm::ES384 => {
-            EncodingKey::from_ec_pem(private_key_pem).map_err(|e| e.to_string())?
-        }
-        Algorithm::EdDSA => EncodingKey::from_ed_pem(private_key_pem).map_err(|e| e.to_string())?,
-    };
+    let claims_json = serde_json::to_string(payload).expect("Failed to get payload json str");
+    let claims_b64 = BASE64_URL_SAFE_NO_PAD.encode(claims_json.as_bytes());
 
-    let token = jsonwebtoken::encode(header, payload, &key).expect("Failed to encode");
+    // signature source
+    let signing_input = format!("{}.{}", header_b64, claims_b64);
+    // signing key (dummy)
+    let mut mac = HmacSha256::new_from_slice(b"").expect("Failed to generate dummy key");
+    mac.update(signing_input.as_bytes());
+    let result = mac.finalize();
+    let signature_bytes = result.into_bytes();
+    // signature
+    let signature_b64 = BASE64_URL_SAFE_NO_PAD.encode(signature_bytes);
+
+    // JWT
+    let token = format!("{}.{}", signing_input, signature_b64);
 
     Ok(token)
 }
 
-/// decode (署名検証なし)
-pub fn decode(s: &str) -> Result<(Option<Header>, Option<Value>), String> {
-    let header = match decode_header(s) {
+/// decode without signature verified
+pub fn decode(s: &str) -> Result<(Option<Value>, Option<Value>), String> {
+    // JWT format = "Header.Payload.Signature"
+    let parts: Vec<&str> = s.split('.').collect();
+
+    // header
+    if parts.len() == 0 {
+        return Err("Failed to decode header: invalid token format".to_owned());
+    }
+
+    let header_b64 = parts[0];
+    let header_bytes = match BASE64_URL_SAFE_NO_PAD.decode(header_b64) {
+        Ok(x) => x,
+        Err(err) => {
+            return Err(format!(
+                "Failed to decode base64 header: {}",
+                err.to_string()
+            ));
+        }
+    };
+    let header = match serde_json::from_slice(&header_bytes) {
         Ok(x) => Some(x),
-        Err(err) => return Err(format!("Failed to decode: {}", err.to_string())),
+        Err(err) => {
+            return Err(format!(
+                "Failed to decode serialization: {}",
+                err.to_string()
+            ));
+        }
     };
 
-    // JWT は "Header.Payload.Signature" の形式。2 番目の要素を取得
-    let parts: Vec<&str> = s.split('.').collect();
+    // payload
     if parts.len() < 2 {
         return Err("Failed to decode payload: invalid token format".to_owned());
     }
+
     let payload_b64 = parts[1];
     let payload_bytes = match BASE64_URL_SAFE_NO_PAD.decode(payload_b64) {
         Ok(x) => x,

@@ -2003,16 +2003,18 @@ dependencies = [
 
 [[package]]
 name = "jwt-encde"
-version = "1.0.8"
+version = "1.0.9"
 dependencies = [
  "arboard",
  "base64",
  "chrono",
+ "hmac",
  "iced",
  "json5",
  "jsonwebtoken",
  "serde",
  "serde_json",
+ "sha2",
  "webbrowser",
 ]
 
