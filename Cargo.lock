@@ -2003,7 +2003,7 @@ dependencies = [
 
 [[package]]
 name = "jwt-encde"
-version = "1.0.7"
+version = "1.0.8"
 dependencies = [
  "arboard",
  "base64",

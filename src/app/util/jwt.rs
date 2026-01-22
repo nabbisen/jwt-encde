@@ -1,5 +1,5 @@
 use base64::{Engine, prelude::BASE64_URL_SAFE_NO_PAD};
-use jsonwebtoken::{self, EncodingKey, Header, decode_header};
+use jsonwebtoken::{self, Algorithm, EncodingKey, Header, decode_header};
 use serde_json::Value;
 
 /// encode (鍵なし / alg: none)
@@ -17,12 +17,26 @@ pub fn encode(header: Option<&Header>, payload: Option<&Value>) -> Result<String
         &Value::Null
     };
 
-    let token = jsonwebtoken::encode(
-        header,
-        payload,
-        &EncodingKey::from_secret(&[]), // ダミーのキー
-    )
-    .expect("Failed to encode");
+    let private_key_pem = &[]; // dummy
+    let key = match header.alg {
+        Algorithm::HS256 | Algorithm::HS384 | Algorithm::HS512 => {
+            EncodingKey::from_secret(private_key_pem)
+        }
+        Algorithm::RS256
+        | Algorithm::RS384
+        | Algorithm::RS512
+        | Algorithm::PS256
+        | Algorithm::PS384
+        | Algorithm::PS512 => {
+            EncodingKey::from_rsa_pem(private_key_pem).map_err(|e| e.to_string())?
+        }
+        Algorithm::ES256 | Algorithm::ES384 => {
+            EncodingKey::from_ec_pem(private_key_pem).map_err(|e| e.to_string())?
+        }
+        Algorithm::EdDSA => EncodingKey::from_ed_pem(private_key_pem).map_err(|e| e.to_string())?,
+    };
+
+    let token = jsonwebtoken::encode(header, payload, &key).expect("Failed to encode");
 
     Ok(token)
 }
