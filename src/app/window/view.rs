@@ -1,4 +1,5 @@
 use iced::highlighter;
+use iced::widget::text::Wrapping;
 use iced::{
     Alignment::{self, Center},
     Element,
@@ -79,7 +80,8 @@ impl Window {
                     .highlight("json", highlighter::Theme::Base16Ocean)
                     .height(Fill)
                     .padding(5)
-                    .size(20),
+                    .size(20)
+                    .wrapping(Wrapping::WordOrGlyph),
             ]
             .width(FillPortion(3))
             .height(Fill),
@@ -103,7 +105,8 @@ impl Window {
                     .highlight("json", highlighter::Theme::Base16Ocean)
                     .height(Fill)
                     .padding(10)
-                    .size(20),
+                    .size(20)
+                    .wrapping(Wrapping::WordOrGlyph),
             ]
             .width(FillPortion(7))
             .height(Fill),
