@@ -81,7 +81,7 @@ impl Window {
                     .height(Fill)
                     .padding(5)
                     .size(20)
-                    .wrapping(Wrapping::WordOrGlyph),
+                    .wrapping(Wrapping::Glyph),
             ]
             .width(FillPortion(3))
             .height(Fill),
@@ -106,7 +106,7 @@ impl Window {
                     .height(Fill)
                     .padding(10)
                     .size(20)
-                    .wrapping(Wrapping::WordOrGlyph),
+                    .wrapping(Wrapping::Glyph),
             ]
             .width(FillPortion(7))
             .height(Fill),
