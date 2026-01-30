@@ -150,8 +150,8 @@ jobs:
           npm install --package-lock-only
           npm ci
           # # for pre version:
-          # npm publish --tag pre
-          npm publish
+          npm publish --tag pre
+          # npm publish
 
   npm-core-publish:
     runs-on: ubuntu-latest
@@ -172,5 +172,5 @@ jobs:
           npm install --package-lock-only --ignore-scripts
           npm ci --ignore-scripts
           # # for pre version:
-          # npm publish --tag pre
-          npm publish
+          npm publish --tag pre
+          # npm publish
