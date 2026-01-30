@@ -149,7 +149,7 @@ jobs:
         run: |
           npm install --package-lock-only
           npm ci
-          npm publish
+          npm publish --tag pre
 
   npm-core-publish:
     runs-on: ubuntu-latest
