@@ -37,10 +37,10 @@ In real-world systems, signing keys and token validation are typically managed b
 -  Install as npm pacakge
     
     ```sh
-    npm install jwt-encde
+    npm install -g jwt-encde
     npx jwt-encde
     ```
-    
+
 -  Install via Rust cargo
     
     ```sh

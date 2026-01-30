@@ -1,6 +1,6 @@
 {
   "name": "jwt-encde",
-  "version": "1.1.0",
+  "version": "1.1.0-pre.8",
   "description": "GUI JWT encoder / decoder - Local, private, easy.",
   "author": "nabbisen<nabbisen@scqr.net>",
   "license": "Apache-2.0",
@@ -23,9 +23,9 @@
     "postinstall": "node postinstall.js"
   },
   "optionalDependencies": {
-    "@jwt-encde/bin-linux-x64-gnu": "1.1.0",
-    "@jwt-encde/bin-darwin-arm64": "1.1.0",
-    "@jwt-encde/bin-win32-x64-msvc": "1.1.0"
+    "@jwt-encde/bin-linux-x64-gnu": "1.1.0-pre.8",
+    "@jwt-encde/bin-darwin-arm64": "1.1.0-pre.8",
+    "@jwt-encde/bin-win32-x64-msvc": "1.1.0-pre.8"
   },
   "keywords": [
     "jwt",
