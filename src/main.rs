@@ -1,7 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod app;
-
 fn main() {
-    let _ = app::start();
+    let _ = jwt_encde::start();
 }
