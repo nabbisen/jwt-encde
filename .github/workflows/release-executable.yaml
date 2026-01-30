@@ -147,12 +147,9 @@ jobs:
       - name: npm publish
         working-directory: npm/${{ matrix.npm-target }}
         run: |
-          npm config set provenance true
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --access public --tag pre
-          # npm install --package-lock-only
-          # npm ci
-          # npm publish
+          npm install --package-lock-only
+          npm ci
+          npm publish --tag pre
 
   npm-core-publish:
     runs-on: ubuntu-latest
@@ -170,10 +167,6 @@ jobs:
       - name: npm publish
         working-directory: npm
         run: |
-          npm config set provenance true
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --access public --tag pre
-          # npm install --package-lock-only --ignore-scripts
-          # npm ci --ignore-scripts
-          # npm publish
-
+          npm install --package-lock-only --ignore-scripts
+          npm ci --ignore-scripts
+          npm publish --tag pre
