@@ -1,9 +1,10 @@
 # jwt-encde
 
-[![crates.io](https://img.shields.io/crates/v/jwt-encde?label=latest)](https://crates.io/crates/jwt-encde)
+[![crates.io](https://img.shields.io/crates/v/jwt-encde?label=rust)](https://crates.io/crates/jwt-encde)
+[![npm](https://img.shields.io/npm/v/jwt-encde)](https://www.npmjs.com/package/jwt-encde)
+[![License](https://img.shields.io/github/license/nabbisen/jwt-encde)](https://github.com/nabbisen/jwt-encde/blob/main/LICENSE)
 [![Dependency Status](https://deps.rs/crate/jwt-encde/latest/status.svg)](https://deps.rs/crate/jwt-encde)
 [![Executable](https://github.com/nabbisen/jwt-encde/actions/workflows/release-executable.yaml/badge.svg)](https://github.com/nabbisen/jwt-encde/actions/workflows/release-executable.yaml)
-[![License](https://img.shields.io/github/license/nabbisen/jwt-encde)](https://github.com/nabbisen/jwt-encde/blob/main/LICENSE)
 
 GUI JWT encoder / decoder - Local, private, easy.
 
