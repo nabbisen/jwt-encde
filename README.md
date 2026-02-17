@@ -9,9 +9,31 @@ GUI JWT encoder / decoder - Local, private, easy.
 
 ![screenshot](./screenshot.png)
 
-## Description
-
 A lightweight, open-source GUI tool for JWT encoding and decoding, designed to support testing around authentication and authorization in app development.
+
+## Usage options
+
+-  Install as npm pacakge
+    
+    ```sh
+    npm install -g jwt-encde
+    # or install locally into your app project:
+    # npm install -D jwt-encde
+    
+    npx jwt-encde
+    ```
+
+-  Install via Rust cargo
+    
+    ```sh
+    cargo install jwt-encde
+    jwt-encde
+    ```
+    
+- Download executable and just run it
+    - [Assets](https://github.com/nabbisen/jwt-encde/releases/latest) in GitHub Releases are avalilable
+
+## Description
 
 This app allows you to **inspect, analyze, and edit JWT payloads as JSON**, and easily convert test JSON data into JWTs for development and debugging purposes.    
 
@@ -31,25 +53,6 @@ This app allows you to **inspect, analyze, and edit JWT payloads as JSON**, and 
 #### Note: This app does **not** support JWT signing or token introspection
 
 In real-world systems, signing keys and token validation are typically managed by IDaaS. They should be verified through actual integration with the provider.
-
-## Usage options
-
--  Install as npm pacakge
-    
-    ```sh
-    npm install -g jwt-encde
-    npx jwt-encde
-    ```
-
--  Install via Rust cargo
-    
-    ```sh
-    cargo install jwt-encde
-    jwt-encde
-    ```
-    
-- Download executable and just run it
-    - [Assets](https://github.com/nabbisen/jwt-encde/releases/latest) in GitHub Releases are avalilable
 
 ## Open-source, with care
 
