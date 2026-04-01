@@ -1,6 +1,6 @@
 [package]
 name = "jwt-encde"
-version = "1.1.5"
+version = "1.1.6"
 edition = "2024"
 
 description = "GUI JWT encoder / decoder - Local, private, easy."
@@ -29,11 +29,11 @@ incremental = false
 arboard = { version = "3", features = ["wayland-data-control"] }
 base64 = { version = "0.22", default-features = false }
 chrono = { version = "0.4.43", default-features = false, features = ["clock"] }
-hmac = { version = "0.12", default-features = false }
+hmac = { version = "0.13", default-features = false }
 iced = { version = "0.14", features = ["highlighter", "svg"] }
 json5 = "1"
 jsonwebtoken = { version = "10", features = ["default", "rust_crypto"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sha2 = { version = "0.10", default-features = false }
+sha2 = { version = "0.11", default-features = false }
 webbrowser = "1"
