@@ -1,6 +1,6 @@
 {
   "name": "@jwt-encde/bin-linux-x64-gnu",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "os": [
     "linux"
   ],
@@ -11,7 +11,7 @@
     "jwt-encde"
   ],
   "description": "GUI JWT encoder / decoder - Local, private, easy.",
-  "author": "nabbisen <nabbisen@scqr.net>",
+  "author": "nabbisen",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
